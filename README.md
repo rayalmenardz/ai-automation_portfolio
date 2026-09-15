@@ -2,10 +2,10 @@
 
 Una solución de nivel empresarial diseñada para automatizar la lectura, análisis y respuesta de **RFPs (Request for Proposals)** utilizando Inteligencia Artificial. Combina un entorno de backend asíncrono en **Google Apps Script**, la **API de Gemini (3.5-flash)** y un **Frontend interactivo en Modo Oscuro** alojado como Web App.
 
-\[\!\[Demo App\](https://img.shields.io/badge/Web\_App-Live\_Demo-blue?style=for-the-badge\&logo=google)\](https://script.google.com/macros/s/AKfycbxPPUvIZVCPplx7OFODIkgy1NnM0sNgEzjfEVbAKz23HZpEk2f888xzGq5XpprlP0Ah/exec)  
-\!\[Google Apps Script\](https://img.shields.io/badge/Google%20Apps%20Script-4285F4?style=flat\&logo=google\&logoColor=white)  
-\!\[Gemini AI\](https://img.shields.io/badge/Gemini\_API-8E75B2?style=flat\&logo=googlecloud\&logoColor=white)  
-\!\[JavaScript\](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat\&logo=javascript\&logoColor=black)
+[![Demo App](https://img.shields.io/badge/Web_App-Live_Demo-blue?style=for-the-badge&logo=google)](https://script.google.com/macros/s/AKfycbxPPUvIZVCPplx7OFODIkgy1NnM0sNgEzjfEVbAKz23HZpEk2f888xzGq5XpprlP0Ah/exec)
+![Google Apps Script](https://img.shields.io/badge/Google%20Apps%20Script-4285F4?style=flat&logo=google&logoColor=white)
+![Gemini AI](https://img.shields.io/badge/Gemini_API-8E75B2?style=flat&logo=googlecloud&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black)
 
 ## **🎯 ¿Qué problema resuelve este proyecto?**
 
@@ -27,28 +27,28 @@ Prueba la aplicación directamente en el navegador sin necesidad de instalación
 
 🛠️ Arquitectura y Tecnologías
 
-                  \+-----------------------------------+  
-                  |  Interfaz Web App (HTML/CSS/JS)   |  
-                  \+-----------------+-----------------+  
-                                    |  
-          \+-------------------------+-------------------------+  
-          |                                                                |  
- \[Pestaña 1: Subida RFP\]                            \[Pestaña 2: Chatbot\]  
-          |                                                                |  
-  subirYProcesarRFP()                               enviarPreguntaChatWeb()  
-          |                                                                |  
-          v                                                               v  
-Google Drive (Nuevos/)                              Google Sheets (Hoja Chat)  
-          |                                                                |  
-          \+-------------------------+-------------------------+  
-                                    |  
-                                    v  
-                     Gemini API (gemini-3.5-flash)  
-                                    |  
-          \+-------------------------+-------------------------+  
-          |                                                                |  
-    Genera PDF & JSON                               Guarda Respuesta  
-          |                                                                |  
++-----------------------------------+
+                  |  Interfaz Web App (HTML/CSS/JS)   |
+                  +-----------------+-----------------+
+                                    |
+          +-------------------------+-------------------------+
+          |                                                   |
+ [Pestaña 1: Subida RFP]                            [Pestaña 2: Chatbot]
+          |                                                   |
+  subirYProcesarRFP()                               enviarPreguntaChatWeb()
+          |                                                   |
+          v                                                   v
+Google Drive (Nuevos/)                              Google Sheets (Hoja Chat)
+          |                                                   |
+          +-------------------------+-------------------------+
+                                    |
+                                    v
+                     Gemini API (gemini-3.5-flash)
+                                    |
+          +-------------------------+-------------------------+
+          |                                                   |
+    Genera PDF & JSON                               Guarda Respuesta
+          |                                                   |
     Modo Overlay UI                                   Actualiza UI Chat
 
 * **Frontend:** HTML5, CSS3 Custom Properties (Dark Mode), Vanilla JS.
