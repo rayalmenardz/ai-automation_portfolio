@@ -25,9 +25,9 @@ Prueba la aplicación directamente en el navegador sin necesidad de instalación
 
 \---
 
-🛠️ Arquitectura y Tecnologías
+## **🛠️ Arquitectura y Tecnologías**
 
-+-----------------------------------+
+                  +-----------------------------------+
                   |  Interfaz Web App (HTML/CSS/JS)   |
                   +-----------------+-----------------+
                                     |
