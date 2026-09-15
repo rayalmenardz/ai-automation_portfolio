@@ -27,6 +27,8 @@ Prueba la aplicación directamente en el navegador sin necesidad de instalación
 
 ## **🛠️ Arquitectura y Tecnologías**
 
+```
+
 +-------------------------------------------------------------+
 |               Interfaz Web App (HTML/CSS/JS)                |
 +------------------------------+------------------------------+
@@ -50,6 +52,8 @@ Prueba la aplicación directamente en el navegador sin necesidad de instalación
  Genera PDF & JSON                               Guarda Respuesta
        |                                               |
  Modo Overlay UI                                 Actualiza UI Chat
+
+```
 
 * **Frontend:** HTML5, CSS3 Custom Properties (Dark Mode), Vanilla JS.
 
