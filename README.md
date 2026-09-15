@@ -27,19 +27,29 @@ Prueba la aplicación directamente en el navegador sin necesidad de instalación
 
 ## **🛠️ Arquitectura y Tecnologías**
 
-graph TD
-    
-    UI[Interfaz Web App - HTML/CSS/JS] -->|Pestaña 1: Subir RFP| RFP[subirYProcesarRFP]
-    UI -->|Pestaña 2: Chatbot| CHAT[enviarPreguntaChatWeb]
-    
-    RFP -->|Guarda documento| DRIVE[Google Drive novos/]
-    CHAT -->|Registra mensaje| SHEETS[Google Sheets hoja chat]
-    
-    DRIVE --> GEMINI[Gemini API gemini-3.5-flash]
-    SHEETS --> GEMINI
-    
-    GEMINI -->|Genera PDF & JSON| RES1[Actualiza Modal UI]
-    GEMINI -->|Respuesta de Chat| RES2[Actualiza Chat UI]
++-------------------------------------------------------------+
+|               Interfaz Web App (HTML/CSS/JS)                |
++------------------------------+------------------------------+
+                               |
+       +-----------------------+-----------------------+
+       |                                               |
+ [Pestaña 1: Subida RFP]                     [Pestaña 2: Chatbot]
+       |                                               |
+  subirYProcesarRFP()                         enviarPreguntaChatWeb()
+       |                                               |
+       v                                               v
+ Google Drive (nuevos/)                      Google Sheets (hoja: chat)
+       |                                               |
+       +-----------------------+-----------------------+
+                               |
+                               v
+                Gemini API (gemini-3.5-flash)
+                               |
+       +-----------------------+-----------------------+
+       |                                               |
+ Genera PDF & JSON                               Guarda Respuesta
+       |                                               |
+ Modo Overlay UI                                 Actualiza UI Chat
 
 * **Frontend:** HTML5, CSS3 Custom Properties (Dark Mode), Vanilla JS.
 
