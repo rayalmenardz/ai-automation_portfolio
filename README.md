@@ -21,7 +21,7 @@ Esta aplicación reduce el tiempo de procesamiento de **horas a minutos**:
 
 Prueba la aplicación directamente en el navegador sin necesidad de instalación:
 
-👉 **\[Acceder a la Web App en Vivo\]**(https://script.google.com/macros/s/AKfycbxPPUvIZVCPplx7OFODIkgy1NnM0sNgEzjfEVbAKz23HZpEk2f888xzGq5XpprlP0Ah/exec)
+👉 **\Acceder a la Web App en Vivo\:**(https://script.google.com/macros/s/AKfycbxPPUvIZVCPplx7OFODIkgy1NnM0sNgEzjfEVbAKz23HZpEk2f888xzGq5XpprlP0Ah/exec)
 
 \---
 
