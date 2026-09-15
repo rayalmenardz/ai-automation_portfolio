@@ -4,7 +4,7 @@
 
 // IDs de carpetas — completar con los valores reales
 const FL_CONFIG = {
-  CARPETA_HISTORICOS_ID: "colocar nuevo id de carpeta",
+  CARPETA_HISTORICOS_ID: "idfile7",
   SPREADSHEET_ID: CONFIG.SPREADSHEET_ID,
 };
 
