@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agente RFP - Enterprise Suite</title>
+  <style>
+    /* ═══════════════════════════════════════════════════════════
+       ESTILO
+       ═══════════════════════════════════════════════════════════ */
+    :root {
+      --bg-dark: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --accent-green: #10b981;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --input-bg: #0f172a;
+      --chat-user: #1d4ed8;
+      --chat-agent: #334155;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Header y Navegación */
+    header {
+      background-color: var(--card-bg);
+      border-bottom: 1px solid var(--card-border);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      font-size: 1.5rem;
+      background: linear-gradient(135deg, var(--accent), var(--accent-green));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: bold;
+    }
+
+    h1 {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    /* Modificador de Pestañas */
+    .tabs {
+      display: flex;
+      gap: 10px;
+    }
+
+    .tab-button {
+      background: transparent;
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      padding: 0.5rem 1.25rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .tab-button.active {
+      background-color: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+
+    .tab-button:hover:not(.active) {
+      background-color: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+    }
+
+    /* Contenedor Principal */
+    main {
+      flex: 1;
+      padding: 2rem;
+      max-width: 1000px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Cards */
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      margin-bottom: 1.2rem;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Formulario RFP */
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    input[type="text"], input[type="file"] {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background-color: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input[type="text"]:focus, input[type="file"]:focus {
+      border-color: var(--accent);
+    }
+
+    .btn-submit {
+      width: 100%;
+      background-color: var(--accent);
+      color: #ffffff;
+      border: none;
+      padding: 0.85rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-submit:hover {
+      background-color: var(--accent-hover);
+    }
+
+    /* Pop-up Modal de Procesamiento */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 2rem;
+      width: 90%;
+      max-width: 500px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .spinner {
+      border: 4px solid rgba(255, 255, 255, 0.1);
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      border-left-color: var(--accent);
+      animation: spin 1s linear infinite;
+      margin: 1.5rem auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .result-box {
+      text-align: left;
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .result-item {
+      margin-bottom: 8px;
+    }
+
+    .result-item span {
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .btn-link {
+      display: inline-block;
+      margin-top: 1rem;
+      background-color: var(--accent-green);
+      color: white;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: opacity 0.2s;
+    }
+
+    .btn-link:hover {
+      opacity: 0.9;
+    }
+
+    /* Interface Chatbot */
+    .chat-box {
+      height: 380px;
+      overflow-y: auto;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 1rem;
+      background-color: var(--input-bg);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 1rem;
+    }
+
+    .chat-msg {
+      max-width: 80%;
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      font-size: 0.92rem;
+      line-height: 1.4;
+    }
+
+    .chat-msg.user {
+      align-self: flex-end;
+      background-color: var(--chat-user);
+      color: white;
+      border-bottom-right-radius: 2px;
+    }
+
+    .chat-msg.agent {
+      align-self: flex-start;
+      background-color: var(--chat-agent);
+      color: var(--text-main);
+      border-bottom-left-radius: 2px;
+    }
+
+    .chat-input-container {
+      display: flex;
+      gap: 10px;
+    }
+
+    .preview-questions {
+      margin-bottom: 1.5rem;
+    }
+
+    .preview-title {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .chips-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      background-color: var(--input-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      cursor: default; /* No seleccionables según especificación */
+      user-select: none;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo-container">
+      <div class="logo-icon">⚡ RFP AI</div>
+      <h1>Agente Automatizado de RFPs</h1>
+    </div>
+    <div class="tabs">
+      <button class="tab-button active" onclick="switchTab('rfp-tab')">📄 Subir RFP</button>
+      <button class="tab-button" onclick="switchTab('chat-tab')">💬 Chat Asistente</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- PESTAÑA 1: SUBIR Y PROCESAR RFP -->
+    <div id="rfp-tab" class="tab-content active">
+      <div class="card">
+        <div class="card-title">Procesar Nuevo Documento RFP</div>
+        <form id="rfpForm" onsubmit="handleRFPSubmit(event)">
+          <div class="form-group">
+            <label for="nombreCliente">Nombre del Cliente *</label>
+            <input type="text" id="nombreCliente" placeholder="Ej: Acme Corp" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="rfpFile">Archivo RFP (PDF o DOCX) *</label>
+            <input type="file" id="rfpFile" accept=".pdf, .docx" required>
+          </div>
+
+          <button type="submit" class="btn-submit" id="btnSubmitRFP">
+            🚀 Subir y Resolver RFP
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- PESTAÑA 2: CHATBOT KNOWLEDGE BASE -->
+    <div id="chat-tab" class="tab-content">
+      <div class="card">
+        <div class="card-title">Consulta de Especificaciones y Requerimientos</div>
+        
+        <!-- Previsualización de preguntas de ejemplo (No seleccionables) -->
+        <div class="preview-questions">
+          <div class="preview-title">Ejemplos de consultas que puedes realizar:</div>
+          <div class="chips-container">
+            <div class="chip">💡 ¿Cómo funciona la integración con los proveedores de pago?</div>
+            <div class="chip">💡 ¿Cómo se realiza la recuperación ante incidentes graves?</div>
+            <div class="chip">💡 ¿Cómo se mide el éxito de una implementación?</div>
+          </div>
+        </div>
+
+        <!-- Caja de mensajes -->
+        <div class="chat-box" id="chatBox">
+          <div class="chat-msg agent">
+            ¡Hola! Soy tu asistente de RFPs. Puedes hacerme preguntas específicas sobre capacidades técnicas, SLAs o especificaciones de la empresa.
+          </div>
+        </div>
+
+        <!-- Input del chat -->
+        <div class="chat-input-container">
+          <input type="text" id="chatInput" placeholder="Escribe tu pregunta sobre la empresa..." onkeypress="handleChatKeyPress(event)">
+          <button class="btn-submit" style="width: auto; padding: 0.75rem 1.5rem;" onclick="sendChatMessage()">
+            Enviar
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- POP-UP MODAL PARA ESTADO DEL RFP -->
+  <div class="modal-overlay" id="statusModal">
+    <div class="modal-content">
+      <h3 id="modalTitle">Procesando RFP...</h3>
+      <p id="modalSub" style="color: var(--text-muted); font-size: 0.9rem; margin-top: 4px;">Analizando documento con Inteligencia Artificial</p>
+      
+      <div class="spinner" id="modalSpinner"></div>
+
+      <div class="result-box" id="modalResult" style="display: none;">
+        <div class="result-item"><span>Estado:</span> <label id="resEstado">-</label></div>
+        <div class="result-item"><span>Resumen:</span> <label id="resResumen">-</label></div>
+        <div class="result-item"><span>Completado:</span> <label id="resFecha">-</label></div>
+        
+        <div style="text-align: center; margin-top: 15px;">
+          <a href="#" id="resLinkPdf" target="_blank" class="btn-link">📥 Descargar RFP Resuelto (PDF)</a>
+        </div>
+      </div>
+
+      <button class="btn-submit" id="btnCloseModal" style="display: none; margin-top: 1rem; background-color: var(--card-border);" onclick="closeModal()">
+        Cerrar
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // ═══════════════════════════════════════════════════════════
+    // LÓGICA FRONTEND EN JAVASCRIPT
+    // ═══════════════════════════════════════════════════════════
+    
+    // Generar o recuperar ID de Sesión para el Chat
+    let sesionId = sessionStorage.getItem('CHAT_SESION_ID');
+    if (!sesionId) {
+      sesionId = 'SES-' + Math.random().toString(36).substring(2, 9).toUpperCase();
+      sessionStorage.setItem('CHAT_SESION_ID', sesionId);
+    }
+
+    // Cambiar entre pestañas
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-button').forEach(el => el.classList.remove('active'));
+      
+      document.getElementById(tabId).classList.add('active');
+      event.currentTarget.classList.add('active');
+    }
+
+    // --- PESTAÑA 1: ENVIAR Y PROCESAR RFP ---
+    function handleRFPSubmit(e) {
+      e.preventDefault();
+      
+      const cliente = document.getElementById('nombreCliente').value;
+      const fileInput = document.getElementById('rfpFile');
+      const file = fileInput.files[0];
+
+      if (!file) return;
+
+      // Abrir modal de progreso
+      showModal('Subiendo y procesando RFP', 'Por favor espera. Esto puede tomar unos momentos...');
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const base64Data = evt.target.result.split(',')[1];
+        
+        // Llamada a la función de AppScript creada en el Hito 1
+        google.script.run
+          .withSuccessHandler(onRFPSuccess)
+          .withFailureHandler(onRFPFailure)
+          .subirYProcesarRFP(cliente, file.name, file.type, base64Data);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function onRFPSuccess(response) {
+      if (response.exito) {
+        document.getElementById('modalTitle').innerText = '¡Procesamiento Exitoso!';
+        document.getElementById('modalSub').innerText = 'Las preguntas del RFP fueron resueltas.';
+        document.getElementById('modalSpinner').style.display = 'none';
+
+        document.getElementById('resEstado').innerText = response.estado;
+        document.getElementById('resResumen').innerText = response.resumen;
+        document.getElementById('resFecha').innerText = response.fechaCompletado;
+        document.getElementById('resLinkPdf').href = response.linkPdf;
+
+        document.getElementById('modalResult').style.display = 'block';
+        document.getElementById('btnCloseModal').style.display = 'block';
+        document.getElementById('rfpForm').reset();
+      } else {
+        onRFPFailure(response.error);
+      }
+    }
+
+    function onRFPFailure(error) {
+      document.getElementById('modalTitle').innerText = 'Error al procesar';
+      document.getElementById('modalSub').innerText = error || 'Ocurrió un fallo en el servidor.';
+      document.getElementById('modalSpinner').style.display = 'none';
+      document.getElementById('btnCloseModal').style.display = 'block';
+    }
+
+    function showModal(title, sub) {
+      document.getElementById('modalTitle').innerText = title;
+      document.getElementById('modalSub').innerText = sub;
+      document.getElementById('modalSpinner').style.display = 'block';
+      document.getElementById('modalResult').style.display = 'none';
+      document.getElementById('btnCloseModal').style.display = 'none';
+      document.getElementById('statusModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('statusModal').style.display = 'none';
+    }
+
+    // Variable global para evitar IDs duplicados en milisegundos idénticos
+    let msgCounter = 0;
+
+    // --- PESTAÑA 2: CHATBOT CON POLLING (CORREGIDO) ---
+    function sendChatMessage() {
+      const input = document.getElementById('chatInput');
+      const pregunta = input.value.trim();
+      if (!pregunta) return;
+
+      // 1. Mostrar mensaje del usuario en pantalla
+      appendChatMessage(pregunta, 'user');
+      input.value = '';
+
+      // 2. Mostrar indicador de "pensando..." con ID único
+      const loadingMsgId = appendChatMessage('⏳ El agente está consultando la base de conocimiento...', 'agent');
+
+      // 3. Registrar pregunta en Sheets vía AppScript
+      google.script.run
+        .withSuccessHandler(function(res) {
+          if (res.exito) {
+            // Iniciar Polling (revisar respuesta cada 4 segundos)
+            pollChatResponse(pregunta, loadingMsgId);
+          } else {
+            updateChatMessage(loadingMsgId, 'Error al enviar la pregunta.');
+          }
+        })
+        .withFailureHandler(function(err) {
+          updateChatMessage(loadingMsgId, 'Error de conexión: ' + err);
+        })
+        .enviarPreguntaChatWeb(sesionId, pregunta);
+    }
+
+    function pollChatResponse(pregunta, msgElementId) {
+      const interval = setInterval(() => {
+        google.script.run
+          .withSuccessHandler(function(res) {
+            if (res.lista) {
+              clearInterval(interval);
+              if (res.respuesta) {
+                updateChatMessage(msgElementId, res.respuesta);
+              } else {
+                updateChatMessage(msgElementId, 'Ocurrió un error al obtener la respuesta.');
+              }
+            }
+          })
+          .verificarRespuestaChatWeb(sesionId, pregunta);
+      }, 4000); // Polling cada 4 segundos
+    }
+
+    function appendChatMessage(text, sender) {
+      const chatBox = document.getElementById('chatBox');
+      const msgDiv = document.createElement('div');
+      
+      // ID 100% único combinando Timestamp + Contador
+      msgCounter++;
+      const id = 'msg-' + Date.now() + '-' + msgCounter;
+      
+      msgDiv.id = id;
+      msgDiv.className = `chat-msg ${sender}`;
+      msgDiv.innerText = text;
+      chatBox.appendChild(msgDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+      return id;
+    }
+
+    function updateChatMessage(elementId, newText) {
+      const msgDiv = document.getElementById(elementId);
+      if (msgDiv) {
+        msgDiv.innerText = newText;
+        document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
+      }
+    }
+
+    function handleChatKeyPress(e) {
+      if (e.key === 'Enter') sendChatMessage();
+    }
+
+    function appendChatMessage(text, sender) {
+      const chatBox = document.getElementById('chatBox');
+      const msgDiv = document.createElement('div');
+      const id = 'msg-' + Date.now();
+      msgDiv.id = id;
+      msgDiv.className = `chat-msg ${sender}`;
+      msgDiv.innerText = text;
+      chatBox.appendChild(msgDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+      return id;
+    }
+
+    function updateChatMessage(elementId, newText) {
+      const msgDiv = document.getElementById(elementId);
+      if (msgDiv) {
+        msgDiv.innerText = newText;
+        document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
+      }
+    }
+
+    function handleChatKeyPress(e) {
+      if (e.key === 'Enter') sendChatMessage();
+    }
+  </script>
+</body>
+</html>
